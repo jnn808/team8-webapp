@@ -1,24 +1,20 @@
 import "./index.css";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import HowItWorks from "./components/HowItWorks";
-import WhoItsFor from "./components/WhoItsFor";
-import WhyUs from "./components/WhyUs";
-import CtaStrip from "./components/CtaStrip";
 import Footer from "./components/Footer";
+import Landing from "./pages/Landing";
+import ReportForm from "./pages/ReportForm";
+import CaseTracker from "./pages/CaseTracker";
 
 export default function App() {
   return (
     <div style={{ background: "#0D0F14", color: "#E8E4DC", minHeight: "100vh" }}>
       <Navbar />
-      <Hero />
-      <div className="divider" />
-      <HowItWorks />
-      <div className="divider" />
-      <WhoItsFor />
-      <div className="divider" />
-      <WhyUs />
-      <CtaStrip />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/report" element={<ReportForm />} />
+        <Route path="/track" element={<CaseTracker />} />
+      </Routes>
       <Footer />
     </div>
   );

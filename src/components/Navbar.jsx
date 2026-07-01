@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const NAV_LINKS = ["How It Works", "Who It's For", "Why Us", "Report"];
 
@@ -13,7 +14,7 @@ export default function Navbar() {
 
   return (
     <nav className={`nav${scrolled ? " scrolled" : ""}`}>
-      <div className="logo">Shield<span>Box</span></div>
+      <Link to="/" className="logo">Shield<span>Box</span></Link>
       <ul className="nav-links">
         {NAV_LINKS.map((l) => (
           <li key={l}>
@@ -21,7 +22,7 @@ export default function Navbar() {
           </li>
         ))}
       </ul>
-      <button className="nav-cta">File a Report</button>
+      <Link to="/report" className="nav-cta">File a Report</Link>
     </nav>
   );
 }

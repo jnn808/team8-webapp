@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Hero() {
   return (
     <section className="hero">
@@ -11,8 +13,8 @@ export default function Hero() {
         corporate misconduct — without fear, without identity.
       </p>
       <div className="hero-actions">
-        <button className="btn-primary">File a Report →</button>
-        <button className="btn-ghost">Track My Case</button>
+        <Link to="/report" className="btn-primary">File a Report →</Link>
+        <Link to="/track" className="btn-ghost">Track My Case</Link>
       </div>
       <div className="hero-stat-row">
         <div className="hero-stat">
