@@ -18,7 +18,7 @@ const SEGMENTS = [
 
 export default function WhoItsFor() {
   return (
-    <section className="section" id="who-it-s-for">
+    <section className="section" id="who-its-for">
       <div className="section-label">Audience</div>
       <h2 className="section-title">Who it's for</h2>
       <p className="section-body">
