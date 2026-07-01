@@ -520,3 +520,90 @@ a.nav-cta, a.btn-primary, a.btn-ghost, a.btn-dark {
   .tracker-form { flex-direction: column; }
   .confirm-actions { flex-direction: column; }
 }
+.report-form {
+  margin-top: 40px;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8b93a3;
+}
+
+.form-input,
+.form-select,
+.form-textarea,
+.form-file {
+  background: #14171f;
+  border: 1px solid #2a2f3a;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: #f4f1ea;
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #c6f24e;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.form-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #d4d8e0;
+  cursor: pointer;
+}
+
+.form-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #c6f24e;
+}
+
+.form-error {
+  font-size: 13px;
+  color: #f28a8a;
+}
+
+.submit-btn {
+  align-self: flex-start;
+  background: #c6f24e;
+  color: #0b0d12;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
