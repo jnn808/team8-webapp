@@ -1,35 +1,35 @@
 # API Needs Statements
+# API Needs Statements — Week 2
+Part D — API Needs Statements
 
-## Needs Statements
-1. Team 8 needs to read a member's list of exercises for the current workout day, in order to display their daily workout split (add/remove/complete status).
+1. GymBuddy needs to create a new report (category, description, timestamp)
 
-   - Freshness: Real-time
-   - Volume: Low (~once per page load, plus on each add/remove/complete action)
-   - Auth: Authenticated
+   in ShieldBox, in order to let gym members submit incident and
 
-2. Team 8 needs to send a target weight to the barbell load calculator and receive the plate distribution, in order to show members exactly which plates to load.
+   maintenance issues (e.g. broken equipment, safety concerns) directly
 
-   - Freshness: Real-time
-   - Volume: Medium (called each time a member enters a new target weight)
-   - Auth: Authenticated
+   from the GymBuddy app in real time.
 
-3. Team 8 needs to read a member's stored account and membership details, in order to pre-fill the account settings page and let members view/edit their info.
+2. GymBuddy needs to read the status of a single case using its unique
 
-   - Freshness: Cached hourly
-   - Volume: Low (~once per settings-page load)
-   - Auth: Authenticated (sensitive — name, email, phone)
+   case code, in order to display report progress (Pending / In Review /
 
-4. Team 8 needs to read the list of available memberships with pricing, discounts, and benefits, in order to display membership options during signup and account changes.
+   Resolved) in the member's "My Reports" tab on page load.
 
-   - Freshness: Cached hourly
-   - Volume: Low (~once per signup or settings-page load)
-   - Auth: Public
+3. GymBuddy needs read access to be scoped strictly to individual case
 
-5. Team 8 needs to read coach availability and create a new appointment, in order to let members book personal training sessions without double-booking.
+   lookups by code, in order to respect ShieldBox's anonymity model — a
 
-   - Freshness: Real-time
-   - Volume: Medium (read on page load, write on booking submit)
-   - Auth: Authenticated
+   general list of all reports is not needed or available, since an
+
+   earlier assumption about a public "Maintenance Board" was ruled out
+
+   during the partner interview.
+
+
+
+
 
 ## Reflection
-[Write 1 paragraph detailing a specific surprise or challenged assumption from your interviews with your ring partners.]
+Going into the interview, we'd assumed ShieldBox would expose something like a general "Maintenance Board" — a list view where GymBuddy could pull all open reports at once, similar to browsing any typical resource collection. That assumption was ruled out during the interview: ShieldBox's anonymity model means there's no general listing endpoint at all. Access is scoped strictly to individual case lookups by unique case code, so a member can only ever check the status of a report they already have the code for — never browse or discover others. This reframed the "My Reports" feature from something we could build as a simple list-and-filter view into something that has to work case-by-case, and it surfaced a question we hadn't resolved: whether the case code alone is sufficient access control, or whether an additional auth token is required per read. That's something we still need to close out with ShieldBox before finalizing the endpoint design.
+
