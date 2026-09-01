@@ -26,6 +26,9 @@ Part D — API Needs Statements
 
    during the partner interview.
 
+4. GymBuddy needs to append additional details or follow-up notes to an existing report using  its case code, in order to allow members to provide extra context if an issue worsens or changes.
+
+5. GymBuddy needs to withdraw or close a submitted report using its case code, in order to let members cancel an accidental submission or mark an issue resolved on their end.
 
 
 
