@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+<<<<<<< HEAD
     "preview": "vite preview",
     "server": "node --watch server/index.js",
     "db:seed": "node server/seed.js"
@@ -15,6 +16,11 @@
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "mysql2": "^3.24.4",
+=======
+    "preview": "vite preview"
+  },
+  "dependencies": {
+>>>>>>> 9bba6ce77c3726aafab437b3e35756faa296f174
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1"
