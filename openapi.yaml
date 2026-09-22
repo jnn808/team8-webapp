@@ -1,0 +1,257 @@
+openapi: 3.0.0
+info:
+  title: ShieldBox Incident Reporting API
+  version: 1.0.0
+  description: Anonymity-focused API allowing GymBuddy users to submit, track, and manage incident and maintenance reports.
+
+servers:
+  - url: http://localhost:3001
+    description: Local development server
+
+paths:
+  /reports:
+    post:
+      summary: Create a new report
+      description: gym members submit incident or maintenance issues in real time.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category
+                - description
+              properties:
+                category:
+                  type: string
+                  enum:
+                    - incident
+                    - maintenance
+                    - harassment
+                    - safety
+                  example: "maintenance"
+                description:
+                  type: string
+                  example: "Cable crossover machine pulley is frayed and slipping under load."
+      responses:
+        "201":
+          description: Report created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - caseCode
+                  - category
+                  - description
+                  - status
+                  - createdAt
+                properties:
+                  caseCode:
+                    type: string
+                    example: "SB-88219"
+                  category:
+                    type: string
+                    example: "maintenance"
+                  description:
+                    type: string
+                    example: "Cable crossover machine pulley is frayed and slipping under load."
+                  status:
+                    type: string
+                    enum:
+                      - Pending
+                      - In Review
+                      - Resolved
+                    example: "Pending"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2026-09-09T08:30:00Z"
+        "400":
+          description: Invalid request payload.
+
+  /reports/{caseCode}:
+    get:
+      summary: Read the status of a single report
+      description: GymBuddy retrieves report progress and history using the unique case code.
+      parameters:
+        - name: caseCode
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "SB-88219"
+      responses:
+        "200":
+          description: Report details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - caseCode
+                  - category
+                  - description
+                  - status
+                  - createdAt
+                  - notes
+                properties:
+                  caseCode:
+                    type: string
+                    example: "SB-88219"
+                  category:
+                    type: string
+                    example: "maintenance"
+                  description:
+                    type: string
+                    example: "Cable crossover machine pulley is frayed and slipping under load."
+                  status:
+                    type: string
+                    enum:
+                      - Pending
+                      - In Review
+                      - Resolved
+                    example: "In Review"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2026-09-09T08:30:00Z"
+                  notes:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - noteId
+                        - message
+                        - createdAt
+                      properties:
+                        noteId:
+                          type: string
+                          example: "not-001"
+                        message:
+                          type: string
+                          example: "Staff has cordoned off the area around the machine."
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-09-09T09:00:00Z"
+        "404":
+          description: Report not found with the provided caseCode.
+
+    patch:
+      summary: Mark an existing report as resolved
+      description: GymBuddy marks a report as resolved on the member's end.
+      parameters:
+        - name: caseCode
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "SB-88219"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - Resolved
+                  example: "Resolved"
+      responses:
+        "200":
+          description: Report status successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - caseCode
+                  - status
+                  - updatedAt
+                properties:
+                  caseCode:
+                    type: string
+                    example: "SB-88219"
+                  status:
+                    type: string
+                    example: "Resolved"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-09-09T09:45:00Z"
+        "404":
+          description: Report not found.
+
+    delete:
+      summary: Withdraw a submitted report
+      description: Withdraw a report that was submitted by accident.
+      parameters:
+        - name: caseCode
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "SB-88219"
+      responses:
+        "204":
+          description: Report successfully withdrawn and deleted.
+        "404":
+          description: Report not found with the provided caseCode.
+
+  /reports/{caseCode}/notes:
+    post:
+      summary: Add a follow-up note to an existing report
+      description: Append context or additional detail if an issue worsens or changes.
+      parameters:
+        - name: caseCode
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "SB-88219"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: "The cable snapped completely when someone attempted to pull it."
+      responses:
+        "201":
+          description: Follow-up note successfully added.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - noteId
+                  - caseCode
+                  - message
+                  - createdAt
+                properties:
+                  noteId:
+                    type: string
+                    example: "not-002"
+                  caseCode:
+                    type: string
+                    example: "SB-88219"
+                  message:
+                    type: string
+                    example: "The cable snapped completely when someone attempted to pull it."
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2026-09-09T09:15:00Z"
+        "404":
+          description: Report not found.
