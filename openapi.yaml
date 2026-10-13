@@ -4,13 +4,10 @@ info:
   version: 1.0.0
   description: Anonymity-focused API allowing GymBuddy users to submit, track, and manage incident and maintenance reports.
 
-<<<<<<< HEAD
 servers:
   - url: http://localhost:3001
     description: Local development server
 
-=======
->>>>>>> 9bba6ce77c3726aafab437b3e35756faa296f174
 paths:
   /reports:
     post:
