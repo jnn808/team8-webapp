@@ -18,240 +18,288 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - category
-                - description
-              properties:
-                category:
-                  type: string
-                  enum:
-                    - incident
-                    - maintenance
-                    - harassment
-                    - safety
-                  example: "maintenance"
-                description:
-                  type: string
-                  example: "Cable crossover machine pulley is frayed and slipping under load."
+              $ref: "#/components/schemas/NewReport"
       responses:
         "201":
           description: Report created successfully.
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - caseCode
-                  - category
-                  - description
-                  - status
-                  - createdAt
-                properties:
-                  caseCode:
-                    type: string
-                    example: "SB-88219"
-                  category:
-                    type: string
-                    example: "maintenance"
-                  description:
-                    type: string
-                    example: "Cable crossover machine pulley is frayed and slipping under load."
-                  status:
-                    type: string
-                    enum:
-                      - Pending
-                      - In Review
-                      - Resolved
-                    example: "Pending"
-                  createdAt:
-                    type: string
-                    format: date-time
-                    example: "2026-09-09T08:30:00Z"
+                $ref: "#/components/schemas/Report"
         "400":
-          description: Invalid request payload.
+          $ref: "#/components/responses/BadRequest"
 
   /reports/{caseCode}:
     get:
       summary: Read the status of a single report
       description: GymBuddy retrieves report progress and history using the unique case code.
       parameters:
-        - name: caseCode
-          in: path
-          required: true
-          schema:
-            type: string
-            example: "SB-88219"
+        - $ref: "#/components/parameters/CaseCode"
       responses:
         "200":
           description: Report details retrieved successfully.
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - caseCode
-                  - category
-                  - description
-                  - status
-                  - createdAt
-                  - notes
-                properties:
-                  caseCode:
-                    type: string
-                    example: "SB-88219"
-                  category:
-                    type: string
-                    example: "maintenance"
-                  description:
-                    type: string
-                    example: "Cable crossover machine pulley is frayed and slipping under load."
-                  status:
-                    type: string
-                    enum:
-                      - Pending
-                      - In Review
-                      - Resolved
-                    example: "In Review"
-                  createdAt:
-                    type: string
-                    format: date-time
-                    example: "2026-09-09T08:30:00Z"
-                  notes:
-                    type: array
-                    items:
-                      type: object
-                      required:
-                        - noteId
-                        - message
-                        - createdAt
-                      properties:
-                        noteId:
-                          type: string
-                          example: "not-001"
-                        message:
-                          type: string
-                          example: "Staff has cordoned off the area around the machine."
-                        createdAt:
-                          type: string
-                          format: date-time
-                          example: "2026-09-09T09:00:00Z"
+                $ref: "#/components/schemas/ReportWithNotes"
         "404":
-          description: Report not found with the provided caseCode.
+          $ref: "#/components/responses/NotFound"
 
     patch:
       summary: Mark an existing report as resolved
       description: GymBuddy marks a report as resolved on the member's end.
       parameters:
-        - name: caseCode
-          in: path
-          required: true
-          schema:
-            type: string
-            example: "SB-88219"
+        - $ref: "#/components/parameters/CaseCode"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - status
-              properties:
-                status:
-                  type: string
-                  enum:
-                    - Resolved
-                  example: "Resolved"
+              $ref: "#/components/schemas/ResolveRequest"
       responses:
         "200":
           description: Report status successfully updated.
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - caseCode
-                  - status
-                  - updatedAt
-                properties:
-                  caseCode:
-                    type: string
-                    example: "SB-88219"
-                  status:
-                    type: string
-                    example: "Resolved"
-                  updatedAt:
-                    type: string
-                    format: date-time
-                    example: "2026-09-09T09:45:00Z"
+                $ref: "#/components/schemas/ResolveResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "404":
-          description: Report not found.
+          $ref: "#/components/responses/NotFound"
 
     delete:
       summary: Withdraw a submitted report
       description: Withdraw a report that was submitted by accident.
       parameters:
-        - name: caseCode
-          in: path
-          required: true
-          schema:
-            type: string
-            example: "SB-88219"
+        - $ref: "#/components/parameters/CaseCode"
       responses:
         "204":
-          description: Report successfully withdrawn and deleted.
+          description: Report successfully withdrawn and deleted. The response has no body.
         "404":
-          description: Report not found with the provided caseCode.
+          $ref: "#/components/responses/NotFound"
 
   /reports/{caseCode}/notes:
     post:
       summary: Add a follow-up note to an existing report
       description: Append context or additional detail if an issue worsens or changes.
       parameters:
-        - name: caseCode
-          in: path
-          required: true
-          schema:
-            type: string
-            example: "SB-88219"
+        - $ref: "#/components/parameters/CaseCode"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - message
-              properties:
-                message:
-                  type: string
-                  example: "The cable snapped completely when someone attempted to pull it."
+              $ref: "#/components/schemas/NewNote"
       responses:
         "201":
           description: Follow-up note successfully added.
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - noteId
-                  - caseCode
-                  - message
-                  - createdAt
-                properties:
-                  noteId:
-                    type: string
-                    example: "not-002"
-                  caseCode:
-                    type: string
-                    example: "SB-88219"
-                  message:
-                    type: string
-                    example: "The cable snapped completely when someone attempted to pull it."
-                  createdAt:
-                    type: string
-                    format: date-time
-                    example: "2026-09-09T09:15:00Z"
+                $ref: "#/components/schemas/CreatedNote"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "404":
-          description: Report not found.
+          $ref: "#/components/responses/NotFound"
+
+components:
+  parameters:
+    CaseCode:
+      name: caseCode
+      in: path
+      required: true
+      description: The unique case code returned when the report was created.
+      schema:
+        type: string
+        example: "SB-88219"
+
+  schemas:
+    Category:
+      type: string
+      description: What kind of report this is.
+      enum:
+        - incident
+        - maintenance
+        - harassment
+        - safety
+      example: "maintenance"
+
+    Status:
+      type: string
+      description: Where the report is in the review process.
+      enum:
+        - Pending
+        - In Review
+        - Resolved
+      example: "Pending"
+
+    NewReport:
+      type: object
+      description: The body you send to create a report.
+      required:
+        - category
+        - description
+      properties:
+        category:
+          $ref: "#/components/schemas/Category"
+        description:
+          type: string
+          example: "Cable crossover machine pulley is frayed and slipping under load."
+
+    Report:
+      type: object
+      description: A report as returned when it is created.
+      required:
+        - caseCode
+        - category
+        - description
+        - status
+        - createdAt
+      properties:
+        caseCode:
+          type: string
+          example: "SB-88219"
+        category:
+          $ref: "#/components/schemas/Category"
+        description:
+          type: string
+          example: "Cable crossover machine pulley is frayed and slipping under load."
+        status:
+          $ref: "#/components/schemas/Status"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-09T08:30:00Z"
+
+    Note:
+      type: object
+      description: A follow-up note attached to a report.
+      required:
+        - noteId
+        - message
+        - createdAt
+      properties:
+        noteId:
+          type: string
+          example: "not-17"
+        message:
+          type: string
+          example: "Staff has cordoned off the area around the machine."
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-09T09:00:00Z"
+
+    ReportWithNotes:
+      description: A report together with all of its follow-up notes.
+      allOf:
+        - $ref: "#/components/schemas/Report"
+        - type: object
+          required:
+            - notes
+          properties:
+            notes:
+              type: array
+              description: Follow-up notes, oldest first. Empty if there are none.
+              items:
+                $ref: "#/components/schemas/Note"
+
+    NewNote:
+      type: object
+      description: The body you send to add a follow-up note.
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: "The cable snapped completely when someone attempted to pull it."
+
+    CreatedNote:
+      type: object
+      description: A follow-up note as returned when it is created.
+      required:
+        - noteId
+        - caseCode
+        - message
+        - createdAt
+      properties:
+        noteId:
+          type: string
+          example: "not-20"
+        caseCode:
+          type: string
+          example: "SB-88219"
+        message:
+          type: string
+          example: "The cable snapped completely when someone attempted to pull it."
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-09-09T09:15:00Z"
+
+    ResolveRequest:
+      type: object
+      description: The body you send to mark a report resolved.
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: The only allowed value is "Resolved".
+          enum:
+            - Resolved
+          example: "Resolved"
+
+    ResolveResult:
+      type: object
+      description: The result of marking a report resolved.
+      required:
+        - caseCode
+        - status
+        - updatedAt
+      properties:
+        caseCode:
+          type: string
+          example: "SB-88219"
+        status:
+          type: string
+          example: "Resolved"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-09-09T09:45:00Z"
+
+    ValidationError:
+      type: object
+      description: Returned with a 400 when the request is missing a field, has a wrong or empty value, or is not valid JSON.
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: "category must be one of: incident, maintenance, harassment, safety."
+
+    NotFoundError:
+      type: object
+      description: Returned with a 404 when no report has the given case code.
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "No report found with caseCode \"SB-00000\"."
+
+  responses:
+    BadRequest:
+      description: Invalid request. A required field is missing, a value is wrong or empty, or the body is not valid JSON.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationError"
+    NotFound:
+      description: No report exists with the provided caseCode.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NotFoundError"
