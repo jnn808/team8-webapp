@@ -28,6 +28,10 @@ paths:
                 $ref: "#/components/schemas/Report"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
 
   /reports/{caseCode}:
     get:
@@ -42,8 +46,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ReportWithNotes"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
 
     patch:
       summary: Mark an existing report as resolved
@@ -65,8 +73,12 @@ paths:
                 $ref: "#/components/schemas/ResolveResult"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
 
     delete:
       summary: Withdraw a submitted report
@@ -76,8 +88,12 @@ paths:
       responses:
         "204":
           description: Report successfully withdrawn and deleted. The response has no body.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
 
   /reports/{caseCode}/notes:
     post:
@@ -100,10 +116,20 @@ paths:
                 $ref: "#/components/schemas/CreatedNote"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
 
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
   parameters:
     CaseCode:
       name: caseCode
@@ -303,3 +329,34 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/NotFoundError"
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Missing or invalid API key"
+    TooManyRequests:
+      description: Rate limit exceeded.
+      headers:
+        Retry-After:
+          description: Seconds to wait before making another request.
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Too many requests"
+              retryAfter:
+                type: integer
+                example: 60
+
+security:
+  - ApiKeyAuth: []

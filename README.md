@@ -199,3 +199,14 @@ npm run server
 
 Different MySQL password or port? Set `DB_PASSWORD`, `DB_PORT`, `DB_USER`,
 or `DB_HOST` as environment variables before `npm run server`.
+## Authentication
+All API endpoints require a valid API key passed in the `X-API-Key` header.
+**Example Request:**
+`curl -H "X-API-Key: <your-api-key>" http://localhost:3001/reports`
+
+**Error Responses:**
+- `401 Unauthorized`: Returned if the key is missing or invalid.
+- `429 Too Many Requests`: Returned if you exceed the rate limit[cite: 7].
+
+## Rate Limiting
+This API limits consumers to **100 requests per minute**[cite: 7]. If you exceed this, you will receive a `429` status code and a `Retry-After` header indicating how many seconds to wait[cite: 7].
