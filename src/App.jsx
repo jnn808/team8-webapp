@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import Landing from "./pages/Landing";
 import ReportForm from "./pages/ReportForm";
 import CaseTracker from "./pages/CaseTracker";
+import RepairHelp from "./pages/RepairHelp"; // We added your new page here
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/report" element={<ReportForm />} />
         <Route path="/track" element={<CaseTracker />} />
+        <Route path="/repair" element={<RepairHelp />} /> {/* We added the route here */}
       </Routes>
       <Footer />
     </div>
