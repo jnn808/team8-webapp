@@ -3,23 +3,29 @@ import { useState, useEffect } from 'react';
 export default function RepairHelp() {
   const [handymen, setHandymen] = useState([]);
   const [error, setError] = useState('');
+  const [banner, setBanner] = useState(''); // New state for the fallback banner
 
   useEffect(() => {
     async function fetchPartnerData() {
       try {
-        // Calling your own backend route, NOT Team 7 directly
         const res = await fetch('/api/partner/handymen');
         
         if (!res.ok) {
-          setError('Partner data is unavailable right now');
+          setError('Partner data is unavailable right now. Try again in a minute.');
           return;
         }
         
-        const data = await res.json();
+        // Backend now sends { data, stale, asof } instead of a bare list
+        const { data, stale, asof } = await res.json();
         setHandymen(data);
+        
+        // If the data is from our cache, show the warning banner
+        if (stale) {
+          const time = new Date(asof).toLocaleTimeString();
+          setBanner(`Showing saved data from ${time}. The partner is not responding.`);
+        }
       } catch (err) {
-        // This handles the partner being down gracefully
-        setError('Partner data is unavailable right now');
+        setError('Partner data is unavailable right now. Try again in a minute.');
       }
     }
     
@@ -29,10 +35,16 @@ export default function RepairHelp() {
   return (
     <div style={{ padding: '20px', marginTop: '80px' }}>
 
-
-    <h2>Available Handymen</h2>
+      <h2>Available Handymen</h2>
       
       {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
+      
+      {/* Renders the fallback banner if stale data is returned */}
+      {banner && (
+        <div style={{ backgroundColor: '#fff3cd', color: '#856404', padding: '10px', borderRadius: '5px', marginBottom: '15px', border: '1px solid #ffeeba' }}>
+          <strong>Notice:</strong> {banner}
+        </div>
+      )}
       
       {!error && handymen.length === 0 && <p>Loading...</p>}
       
