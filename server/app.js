@@ -2,11 +2,15 @@
 import express from "express";
 import cors from "cors";
 import reportsRouter from "./routes/reports.js";
+import { monitor, statsHandler } from "./monitoring.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// ---> ADD MONITOR HERE <---
+app.use(monitor); // FIRST, so rejected requests are logged too
 
 // 1. Load keys from .env
 const VALID_KEYS = (process.env.API_KEYS || '').split(',').filter(Boolean);
@@ -48,8 +52,11 @@ function rateLimit({ windowMs, max }) {
   };
 }
 
+// Add the stats route (protected by the API key check)
+app.get('/stats', requireApiKey, statsHandler);
+
 // 4. Enforce security on routes (Auth first, then Rate Limiter)
-// Testing limit: 3 requests per 1 minute
+// Testing limit: 100 requests per 1 minute
 app.use("/reports", requireApiKey, rateLimit({ windowMs: 60000, max: 100 }), reportsRouter);
 
 app.get("/", (req, res) => {

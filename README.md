@@ -210,3 +210,16 @@ All API endpoints require a valid API key passed in the `X-API-Key` header.
 
 ## Rate Limiting
 This API limits consumers to **100 requests per minute**[cite: 7]. If you exceed this, you will receive a `429` status code and a `Retry-After` header indicating how many seconds to wait[cite: 7].
+
+## Monitoring
+This API includes an in-memory `/stats` endpoint to track health, error rates, and response times.
+- **Endpoint:** `GET /stats`
+- **Auth:** Requires a valid `X-API-Key` header.
+- **Sample Response:**
+  ```json
+  {
+    "uptimeSeconds": 294,
+    "total": 61,
+    "errorRatePercent": 34.4,
+    "routes": { ... }
+  }
