@@ -15,7 +15,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/report" element={<ReportForm />} />
         <Route path="/track" element={<CaseTracker />} />
-        <Route path="/repair" element={<RepairHelp />} /> {/* We added the route here */}
+        <Route path="/witnesses" element={<RepairHelp />} /> {/* We added the route here */}
       </Routes>
       <Footer />
     </div>
