@@ -2,6 +2,7 @@ import 'dotenv/config';
 import app from "./app.js";
 import { ensureTables } from "./database.js";
 import { fetchWithRetry } from "./resilientFetch.js";
+import { versions } from "./partner.js"; // <-- 1. Import your adapter
 
 const PORT = 3001;
 
@@ -14,8 +15,16 @@ app.get('/api/partner/handymen', async (req, res) => {
   try {
     const PARTNER_URL = process.env.PARTNER_URL;
     
+    // 2. Select the version based on your .env file
+    const partnerVer = process.env.PARTNER_VERSION || 'v1';
+    const partnerApi = versions[partnerVer];
+    
+    // 3. Build the URL dynamically using the adapter's path
+    const baseUrl = PARTNER_URL.replace(/\/$/, ''); // strip trailing slash just in case
+    const url = `${baseUrl}${partnerApi.path}`;
+    
     const r = await fetchWithRetry(
-      `${PARTNER_URL}/api/handymen`,
+      url,
       { headers: { 'ngrok-skip-browser-warning': 'true' } },
       { timeoutMs: 1500, retries: 2, delayMs: 200 }
     );
@@ -24,11 +33,14 @@ app.get('/api/partner/handymen', async (req, res) => {
       throw new Error(`partner returned status: ${r.status}`);
     }
 
-    const data = await r.json();
+    const rawData = await r.json();
+    
+    // 4. Transform the data using the adapter's parse function!
+    const parsedData = partnerApi.parse(rawData);
     
     // Save successful data and the current time to our cache
     lastGood = { 
-      data: data, 
+      data: parsedData, 
       asof: new Date().toISOString() 
     };
     
